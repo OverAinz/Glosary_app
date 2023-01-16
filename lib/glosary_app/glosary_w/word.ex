@@ -18,10 +18,12 @@ defmodule GlosaryApp.GlosaryW.Word do
   def changeset(word, attrs) do
     word
     |> cast(attrs, [
+      :category_id,
       :name,
       :description,
       :imagen])
     |> validate_required([
+      :category_id,
       :name,
       :description,
       :imagen])

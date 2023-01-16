@@ -5,7 +5,7 @@ defmodule GlosaryApp.GlosaryC do
 
   import Ecto.Query, warn: false
   alias GlosaryApp.Repo
-
+  alias EctoPaginator
   alias GlosaryApp.GlosaryC.Category
 
   @doc """
@@ -20,6 +20,52 @@ defmodule GlosaryApp.GlosaryC do
   def list_categories do
     Repo.all(Category)
   end
+
+
+  def list_categories_pagination(page, size) do
+    query = from u in Category, select: u, order_by: [asc: u.name]
+    nusers = Repo.all(query) |> Enum.count()
+    pages = nusers/String.to_integer(size)
+    res = rem(nusers, String.to_integer(size))
+    fpag = get_pages(pages, res) |> trunc
+    categories = query
+    |> EctoPaginator.paginate(String.to_integer(page), String.to_integer(size))
+    |> Repo.all()
+
+    %{pages: to_string(fpag), data: categories}
+  end
+
+  def list_categories_pagination_order(page, size, order_by) do
+
+    query = order(order_by)
+    nusers = Repo.all(query) |> Enum.count()
+    pages = nusers/String.to_integer(size)
+    res = rem(nusers, String.to_integer(size))
+    fpag = get_pages(pages, res) |> trunc
+    categories = query
+    |> EctoPaginator.paginate(String.to_integer(page), String.to_integer(size))
+    |> Repo.all()
+
+    %{pages: to_string(fpag), data: categories}
+  end
+
+  defp order(order_by) do
+    case order_by do
+      "last" -> from u in Category, select: u, order_by: [desc: u.inserted_at]
+      "first" -> from u in Category, select: u, order_by: [asc: u.inserted_at]
+    end
+  end
+
+  defp get_pages(pages, res) do
+    repages = if (res > 0) do
+      pages = pages + 1
+      pages
+    else
+      pages
+    end
+    repages
+  end
+
 
   @doc """
   Gets a single category.
@@ -36,6 +82,15 @@ defmodule GlosaryApp.GlosaryC do
 
   """
   def get_category!(id), do: Repo.get!(Category, id)
+
+  def get_by_name(name) do
+    query = from u in Category, where: u.name == ^name
+
+    case Repo.one(query) do
+      nil -> {:error, :not_found}
+      category -> {:ok, category}
+    end
+  end
 
   @doc """
   Creates a category.

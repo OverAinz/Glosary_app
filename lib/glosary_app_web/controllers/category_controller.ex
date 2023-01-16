@@ -11,17 +11,32 @@ defmodule GlosaryAppWeb.CategoryController do
     render(conn, "index.json", categories: categories)
   end
 
+  def index_pag(conn, %{"page" => page, "size" => size}) do
+    %{pages: pages, data: categories} = GlosaryC.list_categories_pagination(page, size)
+    render(conn, "index_pag.json", categories: categories, pages: pages)
+  end
+
+  def index_pag_order(conn, %{"page" => page, "size" => size, "order_by" => order_by}) do
+    %{pages: pages, data: categories} = GlosaryC.list_categories_pagination_order(page, size, order_by)
+    render(conn, "index_pag.json", categories: categories, pages: pages)
+  end
+
+
   def create(conn, %{"category" => category_params}) do
     with {:ok, %Category{} = category} <- GlosaryC.create_category(category_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.category_path(conn, :show, category))
       |> render("show.json", category: category)
     end
   end
 
   def show(conn, %{"id" => id}) do
     category = GlosaryC.get_category!(id)
+    render(conn, "show.json", category: category)
+  end
+
+  def by_name(conn, %{"name" => name}) do
+    {:ok, category} = GlosaryC.get_by_name(name)
     render(conn, "show.json", category: category)
   end
 

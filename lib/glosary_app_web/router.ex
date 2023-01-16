@@ -13,6 +13,11 @@ defmodule GlosaryAppWeb.Router do
     pipe_through :api
 
     get "/public", TestController, :test
+    resources "/categories", CategoryController, except: [:new, :edit]
+    get "/categories/by_name/:name", CategoryController, :by_name
+    get "/categories/pagination/:page/:size", CategoryController, :index_pag
+    get "/categories/pagination/:page/:size/:order_by", CategoryController, :index_pag_order
+
   end
 
   scope "/api", GlosaryAppWeb do

@@ -7,7 +7,7 @@ defmodule GlosaryApp.GlosaryC.Category do
   schema "categories" do
     field :description, :string
     field :name, :string
-    has_may :words, GlosaryApp.GlosaryW.Word
+    has_many :words, GlosaryApp.GlosaryW.Word
 
     timestamps()
   end

@@ -6,6 +6,10 @@ defmodule GlosaryAppWeb.CategoryView do
     %{data: render_many(categories, CategoryView, "category.json")}
   end
 
+  def render("index_pag.json", %{categories: categories, pages: pages}) do
+    %{data: render_many(categories, CategoryView, "category.json"), pages: pages}
+  end
+
   def render("show.json", %{category: category}) do
     %{data: render_one(category, CategoryView, "category.json")}
   end

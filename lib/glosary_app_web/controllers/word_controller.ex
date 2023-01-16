@@ -15,7 +15,6 @@ defmodule GlosaryAppWeb.WordController do
     with {:ok, %Word{} = word} <- GlosaryW.create_word(word_params) do
       conn
       |> put_status(:created)
-      |> put_resp_header("location", Routes.word_path(conn, :show, word))
       |> render("show.json", word: word)
     end
   end
