@@ -26,7 +26,8 @@ defmodule GlosaryApp.GlosaryW.Word do
       :category_id,
       :name,
       :description,
-      :imagen])
+      #:imagen
+      ])
     |> unique_constraint(:name)
   end
 

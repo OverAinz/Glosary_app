@@ -81,7 +81,9 @@ defmodule GlosaryApp.GlosaryC do
       ** (Ecto.NoResultsError)
 
   """
-  def get_category!(id), do: Repo.get!(Category, id)
+  def get_category!(id) do
+    Repo.get!(Category, id) |> Repo.preload(:words)
+  end
 
   def get_by_name(name) do
     query = from u in Category, where: u.name == ^name

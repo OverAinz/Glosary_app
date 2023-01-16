@@ -11,6 +11,11 @@ defmodule GlosaryAppWeb.WordController do
     render(conn, "index.json", words: words)
   end
 
+  def by_category(conn, %{"category_id" => category_id}) do
+    words = GlosaryW.by_category(category_id)
+    render(conn, "index.json", words: words)
+  end
+
   def create(conn, %{"word" => word_params}) do
     with {:ok, %Word{} = word} <- GlosaryW.create_word(word_params) do
       conn

@@ -18,6 +18,8 @@ defmodule GlosaryAppWeb.Router do
     get "/categories/pagination/:page/:size", CategoryController, :index_pag
     get "/categories/pagination/:page/:size/:order_by", CategoryController, :index_pag_order
 
+    resources "/words", WordController, except: [:new, :edit]
+    get "/words/by_category/:category_id", WordController, :by_category
   end
 
   scope "/api", GlosaryAppWeb do

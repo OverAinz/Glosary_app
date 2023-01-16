@@ -7,6 +7,7 @@ defmodule GlosaryApp.GlosaryW do
   alias GlosaryApp.Repo
 
   alias GlosaryApp.GlosaryW.Word
+  alias GlosaryApp.GlosaryC.Category
 
   @doc """
   Returns the list of words.
@@ -19,6 +20,11 @@ defmodule GlosaryApp.GlosaryW do
   """
   def list_words do
     Repo.all(Word)
+  end
+
+  def by_category(category_id) do
+    category = Repo.get!(Category, category_id) |> Repo.preload(:words)
+    category.words
   end
 
   @doc """
@@ -37,6 +43,7 @@ defmodule GlosaryApp.GlosaryW do
   """
   def get_word!(id), do: Repo.get!(Word, id)
 
+
   @doc """
   Creates a word.
 
@@ -50,6 +57,17 @@ defmodule GlosaryApp.GlosaryW do
 
   """
   def create_word(attrs \\ %{}) do
+    category = Repo.get!(Category, attrs["category_id"]) |> Repo.preload(:words)
+    # category = Repo.preload(category, :words)
+    # word_params = %{
+    #   "name": attrs["name"],
+    #   "description": attrs["description"]
+    # }
+    IO.inspect category
+    IO.inspect attrs
+    # {:ok, Ecto.build_assoc(category, :words, word_params)}
+
+
     %Word{}
     |> Word.changeset(attrs)
     |> Repo.insert()
